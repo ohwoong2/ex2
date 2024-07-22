@@ -1,12 +1,3 @@
-/** 
- * PROJECT  : 재능기부 프로젝트
- * NAME  :  TalentDonationProjectService.java
- * DESC  :  재능 기부 프로젝트를 저장, 수정, 삭제, 검색하는 서비스 로직
- * 
- * @author  
- * @version 1.0
-*/
-
 package probono.service;
 
 import java.util.ArrayList;
@@ -16,134 +7,154 @@ import probono.model.dto.Beneficiary;
 import probono.model.dto.Donator;
 import probono.model.dto.TalentDonationProject;
 
-
 public class TalentDonationProjectService {
 
-	// singleton design pattern
-	private static TalentDonationProjectService instance = new TalentDonationProjectService();
+    // singleton design pattern
+    private static TalentDonationProjectService instance = new TalentDonationProjectService();
 
-	/**   
-	 * 진행중인 Project를 저장
-	 */
-	private ArrayList<TalentDonationProject> donationProjectList = new ArrayList<TalentDonationProject>();
+    /**
+     * 진행중인 Project 저장
+     */
+    private ArrayList<TalentDonationProject> donationProjectList = new ArrayList<>();
 
-	private TalentDonationProjectService() {}
+    private TalentDonationProjectService() {}
 
-	public static TalentDonationProjectService getInstance() {
-		return instance;
-	}
+    public static TalentDonationProjectService getInstance() {
+        return instance;
+    }
 
-	/**
-	 * 모든 Project 검색
-	 * 
-	 * @return 모든 Project
-	 */
-	public ArrayList<TalentDonationProject> getDonationProjectsList() {
-		return donationProjectList;
-	}
+    /**
+     * 모든 Project 검색
+     *
+     * @return 모든 Project
+     */
+    public ArrayList<TalentDonationProject> getDonationProjectsList() {
+        return donationProjectList;
+    }
 
-	// TO DO - 구현 및 완성해야 할 job
-	/**
-	 * Project 이름으로 검색 - 객체된 Project 반환하기
-	 * 
-	 * @param projectName 프로젝트 이름
-	 * @return TalentDonationProject 검색된 프로젝트
-	 */
+    // TO DO - 구현 및 완성해야 할 job
+    /**
+     * Project 이름으로 검색 - 객체된 Project 반환하기
+     *
+     * @param projectName 프로젝트 이름
+     * @return TalentDonationProject 검색된 프로젝트
+     */
+    public TalentDonationProject getDonationProject(String projectName) {
+        // 기존 코드
+        /*
+        for (TalentDonationProject project : donationProjectList) {
+            if (project != null && project.getTalentDonationProjectName().equals(projectName)) {
+                return project; // 메소드 자체의 종료
+            }
+        }
+        return null;
+        */
+        
+        // 수정된 코드
+        return donationProjectList.stream()
+            .filter(project -> project != null && project.getTalentDonationProjectName().equals(projectName))
+            .findFirst()
+            .orElse(null);
+    }
 
-	public TalentDonationProject getDonationProject(String projectName) {
-		
-		for (TalentDonationProject project : donationProjectList) {
-			if (project != null && project.getTalentDonationProjectName().equals(projectName)) {
-				return project; //메소드 자체의 종료
-			}
-		}
+    // TO DO
+    /**
+     * 새로운 Project 추가
+     *
+     * @param project 저장하고자 하는 새로운 프로젝트
+     */
+    public void donationProjectInsert(TalentDonationProject project) throws Exception {
+        TalentDonationProject p = getDonationProject(project.getTalentDonationProjectName());
 
-		return null;
-	}
+        if (p != null) {
+            throw new Exception("해당 project명은 이미 존재합니다. 재 확인하세요");
+        }
 
-	// TO DO
-	/**
-	 * 새로운 Project 추가
-	 * 
-	 * @param project 저장하고자 하는 새로운 프로젝트
-	 */
-	
-	/* Controller의 메소드 
-	 * 	public void donationProjectInsert(TalentDonationProject project){}
-	 * */
-	public void donationProjectInsert(TalentDonationProject project)
-			throws Exception {
-		
-		TalentDonationProject p = getDonationProject(project.getTalentDonationProjectName());
+        donationProjectList.add(project);
+    }
 
-		if (p != null) {
-			throw new Exception("해당 project명은 이미 존재합니다. 재 확인하세요");
-		}
+    /**
+     * Project의 기부자 수정 - 프로젝트 명으로 검색해서 해당 프로젝트의 기부자 수정
+     *
+     * @param projectName 프로젝트 이름
+     * @param people      기부자
+     */
+    public void donationProjectUpdate(String projectName, Donator people) throws Exception {
+        // 기존 코드
+        /*
+        for (TalentDonationProject project : donationProjectList) {
+            if (project != null && project.getTalentDonationProjectName().equals(projectName)) {
+                if (people != null) {
+                    project.setProjectDonator(people);
+                    break;
+                } else {
+                    throw new Exception("프로젝트 이름은 있으나 기부자 정보 누락 재확인 하세요");
+                }
+            } else {
+                throw new Exception("프로젝트 이름과 기부자 정보 재 확인 하세요");
+            }
+        }
+        */
 
-		donationProjectList.add(project);
-		
-	}
+        // 수정된 코드
+        Optional<TalentDonationProject> projectOptional = donationProjectList.stream()
+            .filter(project -> project != null && project.getTalentDonationProjectName().equals(projectName))
+            .findFirst();
 
-	/**
-	 * Project의 기부자 수정 - 프로젝트 명으로 검색해서 해당 프로젝트의 기부자 수정
-	 * 
-	 * @param projectName 프로젝트 이름
-	 * @param people      기부자
-	 */
-	public void donationProjectUpdate(String projectName, Donator people) throws Exception {
+        if (projectOptional.isPresent()) {
+            TalentDonationProject project = projectOptional.get();
+            if (people != null) {
+                project.setProjectDonator(people);
+            } else {
+                throw new Exception("프로젝트 이름은 있으나 기부자 정보 누락 재확인 하세요");
+            }
+        } else {
+            throw new Exception("프로젝트 이름과 기부자 정보 재 확인 하세요");
+        }
+    }
 
-		for (TalentDonationProject project : donationProjectList) {
+    // TO DO
+    /**
+     * Project의 수혜자 수정 - 프로젝트 명으로 검색해서 해당 프로젝트의 수혜자 수정
+     *
+     * @param projectName 프로젝트 이름
+     * @param people      수혜자
+     */
+    public void beneficiaryProjectUpdate(String projectName, Beneficiary people) throws Exception {
+        // 기존 코드
+        /*
+        for (TalentDonationProject project : donationProjectList) {
+            if (project != null && project.getTalentDonationProjectName().equals(projectName)) {
+                project.setProjectBeneficiary(people);
+                break;
+            }
+        }
+        */
 
-			if (project != null && project.getTalentDonationProjectName().equals(projectName)) {
+        // 수정된 코드
+        Optional<TalentDonationProject> projectOptional = donationProjectList.stream()
+            .filter(project -> project != null && project.getTalentDonationProjectName().equals(projectName))
+            .findFirst();
 
-				if (people != null) {
-					project.setProjectDonator(people);
-					break;
-				} else {
-					throw new Exception("프로젝트 이름은 있으나 기부자 정보 누락 재확인 하세요");
-				}
+        if (projectOptional.isPresent()) {
+            TalentDonationProject project = projectOptional.get();
+            project.setProjectBeneficiary(people);
+        } else {
+            throw new Exception("프로젝트 이름과 수혜자 정보 재 확인 하세요");
+        }
+    }
 
-			} else {
-				throw new Exception("프로젝트 이름과 기부자 정보 재 확인 하세요");
-			}
-		}
+    // TO DO
+    /**
+     * Project 삭제 - 프로젝트 명으로 해당 프로젝트 삭제
+     *
+     * @param projectName 삭제하고자 하는 프로젝트 이름
+     */
+    public void donationProjectDelete(String projectName) {
+        TalentDonationProject project = getDonationProject(projectName);
 
-	}
-
-	// TO DO
-	/**
-	 * Project의 수혜자 수정 - 프로젝트 명으로 검색해서 해당 프로젝트의 수혜자 수정
-	 * 
-	 * @param projectName 프로젝트 이름
-	 * @param people      수혜자
-	 */
-	public void beneficiaryProjectUpdate(String projectName, Beneficiary people) {
-
-		for (TalentDonationProject project : donationProjectList) {
-
-			if (project != null && project.getTalentDonationProjectName().equals(projectName)) {
-
-				project.setProjectBeneficiary(people);
-
-				break;
-			}
-		}
-
-	}
-
-	// TO DO
-	/**
-	 * Project 삭제 - 프로젝트 명으로 해당 프로젝트 삭제
-	 * 
-	 * @param projectName 삭제하고자 하는 프로젝트 이름
-	 */
-	public void donationProjectDelete(String projectName) {
-		TalentDonationProject project = getDonationProject(projectName);
-
-		if (project != null) {
-			donationProjectList.remove(project);
-		}
-
-	}
-
+        if (project != null) {
+            donationProjectList.remove(project);
+        }
+    }
 }
