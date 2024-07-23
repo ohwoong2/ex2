@@ -74,5 +74,6 @@ public class StartView {
         // Delete project
         controller.donationProjectDelete("01슈바이처");
         controller.getDonationProject("01슈바이처");
+        //변경사항
     }
 }
