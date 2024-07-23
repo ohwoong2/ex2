@@ -51,6 +51,7 @@ public class TalentDonationProjectService {
         */
         
         // 수정된 코드
+    	// for문 사용하지 않고 stream을 사용해서 특정 프로젝트를 반환하는 함수 리팩토링
         return donationProjectList.stream()
             .filter(project -> project != null && project.getTalentDonationProjectName().equals(projectName))
             .findFirst()
@@ -97,6 +98,7 @@ public class TalentDonationProjectService {
         */
 
         // 수정된 코드
+    	// Optional과 stream을 사용해서 프로젝트 업데이트 하는 함수 수정
         Optional<TalentDonationProject> projectOptional = donationProjectList.stream()
             .filter(project -> project != null && project.getTalentDonationProjectName().equals(projectName))
             .findFirst();
@@ -132,6 +134,7 @@ public class TalentDonationProjectService {
         */
 
         // 수정된 코드
+    	// Optional과 stream을 사용해서 프로젝트 업데이트 하는 함수 수정
         Optional<TalentDonationProject> projectOptional = donationProjectList.stream()
             .filter(project -> project != null && project.getTalentDonationProjectName().equals(projectName))
             .findFirst();
