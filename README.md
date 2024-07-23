@@ -36,5 +36,63 @@ bash
 
 ## 리팩토링 내용
 ### 🔧 리팩토링 작업:
+`TalentDonationProjectService.java` - `donationProjectUpdate`
 ``` java
+/* 기존 코드 */
+for (TalentDonationProject project : donationProjectList) {
+            if (project != null && project.getTalentDonationProjectName().equals(projectName)) {
+                if (people != null) {
+                    project.setProjectDonator(people);
+                    break;
+                } else {
+                    throw new Exception("프로젝트 이름은 있으나 기부자 정보 누락 재확인 하세요");
+                }
+            } else {
+                throw new Exception("프로젝트 이름과 기부자 정보 재 확인 하세요");
+            }
+}
+```
+
+``` java
+/* 수정 코드 */
+Optional<TalentDonationProject> projectOptional = donationProjectList.stream()
+            .filter(project -> project != null && project.getTalentDonationProjectName().equals(projectName))
+            .findFirst();
+
+        if (projectOptional.isPresent()) {
+            TalentDonationProject project = projectOptional.get();
+            if (people != null) {
+                project.setProjectDonator(people);
+            } else {
+                throw new Exception("프로젝트 이름은 있으나 기부자 정보 누락 재확인 하세요");
+            }
+        } else {
+            throw new Exception("프로젝트 이름과 기부자 정보 재 확인 하세요");
+        }
+```
+`TalentDonationProjectService.java` - `beneficiaryProjectUpdate`
+
+``` java
+/* 기존 코드 */
+for (TalentDonationProject project : donationProjectList) {
+            if (project != null && project.getTalentDonationProjectName().equals(projectName)) {
+                project.setProjectBeneficiary(people);
+                break;
+            }
+        }
+
+```
+
+``` java
+/* 수정 코드*/
+Optional<TalentDonationProject> projectOptional = donationProjectList.stream()
+            .filter(project -> project != null && project.getTalentDonationProjectName().equals(projectName))
+            .findFirst();
+
+        if (projectOptional.isPresent()) {
+            TalentDonationProject project = projectOptional.get();
+            project.setProjectBeneficiary(people);
+        } else {
+            throw new Exception("프로젝트 이름과 수혜자 정보 재 확인 하세요");
+}
 ```
