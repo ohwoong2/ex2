@@ -15,7 +15,7 @@
 <br>
 
 ## 특징
-### ✨ 주요 기능:
+### ✨ 주요 작업:
 성능 최적화: 기존의 for 반복문을 Stream API로 변경하여 성능 향상
 코드 가독성 향상: Arrays.asList를 사용하여 생성자 가독성 개선 및 주석 추가
 <br>
@@ -28,8 +28,7 @@
 <br>
 
 ## 저장소 클론
-bash
-`git clone https://github.com/yourusername/project-refactoring.git](https://github.com/ohwoong2/java_refactoring.git`
+`https://github.com/ohwoong2/java_refactoring.git`
 <br>
 <br>
 <br>
